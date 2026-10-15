@@ -114,7 +114,7 @@ main,footer{position:relative;z-index:2}
 .fb{display:none}
 @media (max-width:819px){
   .chap{min-height:100svh;align-items:flex-end}
-  .txt{max-width:none;padding:90px 0 7svh;background:linear-gradient(180deg,transparent,rgba(5,6,7,.9) 26%)}
+  .txt{max-width:none;padding:90px 0 7svh;background:none;text-shadow:0 1px 2px rgba(5,6,7,.9)}
   .chap[data-side] .txt{margin-inline:0}
   .txt h2{font-size:clamp(1.9rem,8vw,2.6rem)}
   .txt p{font-size:1rem;margin-top:.9rem}
@@ -174,13 +174,18 @@ main,footer{position:relative;z-index:2}
 .duo{background:var(--bg-2);padding:150px 0 140px;overflow:hidden;border-top:1px solid var(--line)}
 .duo-grid{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:48px;align-items:center}
 .duo .sec-h{margin:0}
-.duo-ph{position:relative;display:flex;justify-content:center;gap:0;perspective:1600px;min-height:560px}
+.duo-ph{position:relative;display:flex;justify-content:center;align-items:center;gap:0;perspective:1600px;min-height:560px}
 .duo-ph .dev{--dw:min(270px,40vw);position:relative}
 .duo-ph .dev:first-child{transform:translateX(18%) rotateY(18deg) rotateZ(-3deg);z-index:1}
 .duo-ph .dev:last-child{transform:translateX(-18%) translateY(40px) rotateY(-18deg) rotateZ(3deg);z-index:2}
 .duo-ph:hover .dev:first-child{transform:translateX(8%) rotateY(8deg) rotateZ(-2deg)}
 .duo-ph:hover .dev:last-child{transform:translateX(-8%) translateY(40px) rotateY(-8deg) rotateZ(2deg)}
-@media (max-width:900px){.duo-grid{grid-template-columns:minmax(0,1fr)}}
+@media (max-width:900px){.duo-grid{grid-template-columns:minmax(0,1fr)}.duo-ph{min-height:0;padding:30px 0 60px}}
+.tile.w .fan-g .dev::before{content:"";position:absolute;top:calc(var(--dw)*.028);left:calc(var(--dw)*.028);right:calc(var(--dw)*.028);height:calc(var(--dw)*.11);background:var(--cb,#181310);border-radius:calc(var(--dw)*.145) calc(var(--dw)*.145) 0 0}
+.tile.w .fan-g .dev img{margin-top:calc(var(--dw)*.11);height:calc(var(--dw)*1.753);object-fit:fill;border-top-left-radius:0;border-top-right-radius:0}
+.tile.w .fan-g .dev::after{z-index:2}
+.tile.w .fan-g .dev:nth-child(3){--cb:#fbf7f4}
+.duo-ph .dev{align-self:center;height:auto}.duo-ph .dev img{height:calc(var(--dw)*1.863);aspect-ratio:auto}.tile.w .fan-g .dev img{aspect-ratio:auto}
 
 /* plus */
 .plus{background:var(--bg);padding:150px 0;border-top:1px solid var(--line)}
@@ -774,10 +779,12 @@ function initGL(){
   function buildPoses(){
     mobile=innerWidth<820||innerWidth/innerHeight<.8;
     var TURN=-Math.PI*2; P=[];
-    P.push({x:0,y:mobile?-.52:-.5,s:mobile?.8:.98,ry:.2,rx:-.04,rz:0,scr:'2217',aura:'#1f8f80',side:1});
+    var mvh=innerHeight, mth=0, mS=.48, mY=.08;
+    if(mobile){var tx=chapEls[0]&&chapEls[0].querySelector('.txt'); mth=tx?Math.max(0,tx.offsetHeight-60):300; var ma=Math.max(.25,(mvh-mth-72)/mvh); mS=Math.max(.3,Math.min(.5,ma/.98)); var mc=64/mvh+ma/2; mY=.08+(.405-mc)/.86}
+    P.push({x:0,y:mobile?-.3-Math.max(0,844-mvh)*.0006:-.5,s:mobile?.7:.98,ry:.2,rx:-.04,rz:0,scr:'2217',aura:'#1f8f80',side:1});
     chapEls.forEach(function(el,i){
       var side=+el.getAttribute('data-side');
-      P.push({x:mobile?0:side*.245,y:mobile?.2:0,s:mobile?.5:.86,ry:TURN-side*(mobile?.28:.42),rx:.05,rz:.03*side,scr:el.getAttribute('data-scr'),aura:el.getAttribute('data-aura'),side:side});
+      P.push({x:mobile?0:side*.245,y:mobile?mY:0,s:mobile?mS:.86,ry:TURN-side*(mobile?.28:.42),rx:.05,rz:.03*side,scr:el.getAttribute('data-scr'),aura:el.getAttribute('data-aura'),side:side});
     });
     var L=P[P.length-1];
     P.push({x:0,y:1.2,s:.8,ry:TURN,rx:0,rz:0,scr:L.scr,aura:L.aura,side:L.side});

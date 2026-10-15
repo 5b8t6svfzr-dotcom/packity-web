@@ -271,7 +271,7 @@ main,footer{position:relative;z-index:2}
 .wrow .btn{flex:none;white-space:nowrap}
 .wrow .btn[disabled]{opacity:.6;cursor:progress}
 .hp{position:absolute!important;left:-9999px;width:1px;height:1px;opacity:0}
-.wcons{display:flex;gap:10px;align-items:flex-start;text-align:left;margin-top:16px;color:var(--muted);font-size:.86rem;line-height:1.4;cursor:pointer}
+.wcons{display:flex;gap:10px;align-items:flex-start;text-align:center;justify-content:center;margin-top:16px;color:var(--muted);font-size:.86rem;line-height:1.4;cursor:default}
 .wcons input{margin-top:.2em;accent-color:var(--teal);width:16px;height:16px;flex:none}
 .wmsg{min-height:1.4em;margin-top:12px;font-size:.92rem;color:var(--red)}
 .wmsg.ok{color:var(--teal)}
@@ -512,10 +512,10 @@ main,footer{position:relative;z-index:2}
             <button class="btn" type="submit" id="wBtn">Chci být první</button>
           </div>
           <input type="text" name="web" id="wHp" tabindex="-1" autocomplete="off" aria-hidden="true" class="hp">
-          <label class="wcons"><input type="checkbox" id="wCons" required><span>Souhlasím, že mi Packity pošle e-mail o spuštění aplikace. Souhlas můžu kdykoli odvolat.</span></label>
+          <p class="wcons"><span>Kliknutím na „Chci být první“ souhlasíš, že ti Packity pošle potvrzení a e-mail o spuštění aplikace. Nic dalšího ti posílat nebudeme a souhlas můžeš kdykoli odvolat odpovědí na e-mail.</span></p>
           <p class="wmsg" id="wMsg" role="status" aria-live="polite"></p>
         </form>
-        <div class="wdone" id="wDone" hidden><span class="wtick"></span><h3>Jsi na listině.</h3><p>Ozveme se, jakmile bude Packity venku. Děkujeme!</p></div>
+        <div class="wdone" id="wDone" hidden><span class="wtick"></span><h3>Jsi na listině.</h3><p>Potvrzení ti právě letí do schránky (mrkni i do spamu). Ozveme se, jakmile bude Packity venku.</p></div>
       </div>
     </div>
   </section>
@@ -629,14 +629,13 @@ pageFx();
 var WL={url:'https://zslpwoujymccmoodvoml.supabase.co',key:'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpzbHB3b3VqeW1jY21vb2R2b21sIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk5NjIwOTQsImV4cCI6MjA5NTUzODA5NH0.qI0pB83Xpn67L_qh_oKctAmpFxIBn4hFZG9INBOJb8w'};
 (function(){
   var f=$('#wForm'); if(!f)return;
-  var mail=$('#wMail'), cons=$('#wCons'), hp=$('#wHp'), msg=$('#wMsg'), btn=$('#wBtn'), done=$('#wDone');
+  var mail=$('#wMail'), hp=$('#wHp'), msg=$('#wMsg'), btn=$('#wBtn'), done=$('#wDone');
   function say(t,ok){msg.textContent=t;msg.className='wmsg'+(ok?' ok':'')}
   function finish(t){f.hidden=true;done.hidden=false;if(t)$('p',done).textContent=t}
   f.addEventListener('submit',function(e){
     e.preventDefault(); if(hp.value)return finish();
     var v=mail.value.trim();
     if(!/^[^@\s]+@[^@\s]+\.[^@\s]{2,}$/.test(v))return say('Zkontroluj prosím e-mail, něco tam nesedí.');
-    if(!cons.checked)return say('Potvrď prosím souhlas, abychom ti mohli napsat.');
     if(!WL.url||WL.url.indexOf('@@')===0){say('Ukázkový režim: e-mail se zatím neukládá.',true);return}
     btn.disabled=true; say('Ukládám…',true);
     fetch(WL.url+'/rest/v1/waitlist',{method:'POST',headers:{'Content-Type':'application/json',apikey:WL.key,Authorization:'Bearer '+WL.key,Prefer:'return=minimal'},body:JSON.stringify({email:v.toLowerCase(),source:'web',lang:'cs'})})
